@@ -1,2 +1,2 @@
 # snaptang.github.io
-贪吃蛇
+Snake
