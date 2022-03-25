@@ -1,7 +1,11 @@
+var snakeWrap = document.getElementById('snakeWrap');  //游戏地图
+snakeWrap.style.height = "600px";
+snakeWrap.style.width = "600px";
+
 var tr = 20, //行数
     td = 20, //列数
-    sw = 600/tr, //方块的宽
-    sh = 600/td; //方块的高
+    sw = parseInt(snakeWrap.style.height)/tr, //方块的宽
+    sh = parseInt(snakeWrap.style.width)/td; //方块的高
 
 //方块对象-----------------------------------------------------------
 function Square(x,y,classname){
@@ -9,7 +13,6 @@ function Square(x,y,classname){
     this.y = y*sh;
     this.viewContent = document.createElement('div'); //方块对应的DOM元素
     this.viewContent.className = classname;
-    this.parent = document.getElementById('snakeWrap'); //方块的父级
 }
 
 Square.prototype.create = function(){ //创建方块DOM
@@ -18,11 +21,11 @@ Square.prototype.create = function(){ //创建方块DOM
     this.viewContent.style.height = sh + 'px';
     this.viewContent.style.left = this.x + 'px';
     this.viewContent.style.top = this.y + 'px';
-    this.parent.appendChild(this.viewContent);
+    snakeWrap.appendChild(this.viewContent);
 }
 
 Square.prototype.remove = function(){
-    this.parent.removeChild(this.viewContent);
+    snakeWrap.removeChild(this.viewContent);
 }
 //蛇对象-----------------------------------------------------------
 var snake = null;
@@ -202,7 +205,7 @@ Game.prototype.init = function(){
     createFood();
     document.onkeydown = function(ev){
         if(snake.pos[0][1] != snake.pos[1][1]){
-            if(ev.code == "ArrowLeft" || ev.code == "KeyL"){
+            if(ev.code == "ArrowLeft" || ev.code == "KeyA"){
                 snake.direction = snake.directionNum.left;
             }else if(ev.code == "ArrowRight" || ev.code == "KeyD"){
                 snake.direction = snake.directionNum.right;
@@ -215,6 +218,16 @@ Game.prototype.init = function(){
                 snake.direction = snake.directionNum.down;
             }
         }
+        if(ev.code == "Space"){
+            if(pauseBtn.parentNode.style.display == "" || pauseBtn.parentNode.style.display == "none"){
+                game.pause();
+                pauseBtn.parentNode.style.display = 'block';
+            }else{
+                game.start();
+                pauseBtn.parentNode.style.display = 'none';
+            }
+            
+        }
     }
 
     this.start();
@@ -223,7 +236,7 @@ Game.prototype.init = function(){
 Game.prototype.start = function(){
     this.timer = setInterval(() => {
         snake.getNextPos();
-    },300);
+    },200);
 }
 
 Game.prototype.pause = function(){
@@ -234,6 +247,7 @@ Game.prototype.pause = function(){
 Game.prototype.over = function(){
     this.pause();
     var i = 6;
+    snakeWrap.onclick = "";
     if(space != 0){
         var int = setInterval(() => {
             if(i--){
@@ -247,14 +261,16 @@ Game.prototype.over = function(){
             }
         }, 150);
 
-        setTimeout("overCurtain.children[1].innerHTML = '游戏结束！点击游戏内任意位置重新开始';"+
+        setTimeout("overCurtain.children[1].innerHTML = '游戏结束！点击游戏内任意位置或按任意键重新开始';"+
                 "overCurtain.children[0].childNodes[2].data = game.score;"+
-                "overCurtain.style.display = 'block';",
+                "overCurtain.style.display = 'block';"+
+                "document.onkeydown = overCurtain.onclick;",
                 1000);
     }else{
-        setTimeout("overCurtain.children[1].innerHTML = '你赢了！点击游戏内任意位置重新开始';"+
+        setTimeout("overCurtain.children[1].innerHTML = '你赢了！点击游戏内任意位置或按任意键重新开始';"+
                 "overCurtain.children[0].childNodes[2].data = game.score;"+
-                "overCurtain.style.display = 'block';",
+                "overCurtain.style.display = 'block';"+
+                "document.onkeydown = snakeWrap.onclick;",
                 500);
     }
     
@@ -263,7 +279,6 @@ Game.prototype.over = function(){
 
 //按钮---------------------------------------------------------------
 var startBtn = document.querySelector('.startBtn button'),
-    snakeWrap = document.getElementById('snakeWrap'),
     pauseBtn = document.querySelector('.pauseBtn button'),
     overCurtain = document.querySelector('.gameOver');
 //开始游戏
