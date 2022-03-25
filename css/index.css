@@ -1,7 +1,7 @@
 .content{
     width: 640px;
-    height: 640px;
-    margin: 100px auto;
+    height: 100%;
+    margin: 30px auto;
     position: relative;
 }
 
