@@ -190,6 +190,7 @@ var game = null;
 
 function Game(){
     this.timer = null;
+    this.speed = 200;
     this.score = 0; 
     this.land = [];  //地面(蛇能走的所有方块)
 }
@@ -204,29 +205,48 @@ Game.prototype.init = function(){
     snake.init();
     createFood();
     document.onkeydown = function(ev){
-        if(snake.pos[0][1] != snake.pos[1][1]){
-            if(ev.code == "ArrowLeft" || ev.code == "KeyA"){
-                snake.direction = snake.directionNum.left;
-            }else if(ev.code == "ArrowRight" || ev.code == "KeyD"){
-                snake.direction = snake.directionNum.right;
-            }
-        }
-        else if(snake.pos[0][0] != snake.pos[1][0]){
-            if(ev.code == "ArrowUp" || ev.code == "KeyW"){
-                snake.direction = snake.directionNum.up;
-            }else if(ev.code == "ArrowDown" || ev.code == "KeyS"){
-                snake.direction = snake.directionNum.down;
-            }
+        if(ev.code == "ArrowLeft" || ev.code == "KeyA"){
+            leftBtn.onclick();
+        }else if(ev.code == "ArrowRight" || ev.code == "KeyD"){
+            rightBtn.onclick();
+        }else if(ev.code == "ArrowUp" || ev.code == "KeyW"){
+            upBtn.onclick();
+        }else if(ev.code == "ArrowDown" || ev.code == "KeyS"){
+            downBtn.onclick();
         }
         if(ev.code == "Space"){
             if(pauseBtn.parentNode.style.display == "" || pauseBtn.parentNode.style.display == "none"){
-                game.pause();
-                pauseBtn.parentNode.style.display = 'block';
+                if(game.timer != undefined){
+                    game.pause();
+                    pauseBtn.parentNode.style.display = 'block';
+                }
             }else{
                 game.start();
                 pauseBtn.parentNode.style.display = 'none';
             }
             
+        }
+    }
+
+    
+    document.onkeyup = function(ev){
+        switch(ev.code){
+            case "ArrowUp":
+            case "KeyW":
+                upBtn.className = "up";
+                break;
+            case "ArrowRight":
+            case "KeyD":
+                rightBtn.className = "right";
+                break;
+            case "ArrowDown":
+            case "KeyS":
+                downBtn.className = "down";
+                break;
+            case "ArrowLeft":
+            case "KeyA":
+                leftBtn.className = "left";
+                break;
         }
     }
 
@@ -236,18 +256,17 @@ Game.prototype.init = function(){
 Game.prototype.start = function(){
     this.timer = setInterval(() => {
         snake.getNextPos();
-    },200);
+    },this.speed);
 }
 
 Game.prototype.pause = function(){
-    clearInterval(this.timer);
+    this.timer = clearInterval(this.timer);
 }
 
 
 Game.prototype.over = function(){
     this.pause();
     var i = 6;
-    snakeWrap.onclick = "";
     if(space != 0){
         var int = setInterval(() => {
             if(i--){
@@ -270,7 +289,7 @@ Game.prototype.over = function(){
         setTimeout("overCurtain.children[1].innerHTML = '你赢了！点击游戏内任意位置或按任意键重新开始';"+
                 "overCurtain.children[0].childNodes[2].data = game.score;"+
                 "overCurtain.style.display = 'block';"+
-                "document.onkeydown = snakeWrap.onclick;",
+                "document.onkeydown = overCurtain.onclick;",
                 500);
     }
     
@@ -280,7 +299,11 @@ Game.prototype.over = function(){
 //按钮---------------------------------------------------------------
 var startBtn = document.querySelector('.startBtn button'),
     pauseBtn = document.querySelector('.pauseBtn button'),
-    overCurtain = document.querySelector('.gameOver');
+    overCurtain = document.querySelector('.gameOver'),
+    upBtn = document.getElementsByClassName('direction')[0].children[0],
+    rightBtn = document.getElementsByClassName('direction')[0].children[1],
+    downBtn = document.getElementsByClassName('direction')[0].children[2],
+    leftBtn = document.getElementsByClassName('direction')[0].children[3];
 //开始游戏
 startBtn.onclick = function(){
     startBtn.parentNode.style.display = 'none';
@@ -289,8 +312,10 @@ startBtn.onclick = function(){
 }
 //暂定游戏
 snakeWrap.onclick = function(){
-    game.pause();
-    pauseBtn.parentNode.style.display = 'block';
+    if(game.timer != undefined){
+        game.pause();
+        pauseBtn.parentNode.style.display = 'block';
+    }
 }
 //继续游戏
 pauseBtn.onclick = function(){
@@ -303,5 +328,33 @@ overCurtain.onclick = function(){
     snakeWrap.innerHTML = '';
     game = new Game();
     startBtn.parentNode.style.display = 'block';
+}
+//方向键
+upBtn.onclick = function(){
+    if(snake != null && snake.pos[0][0] != snake.pos[1][0]){
+        snake.direction = snake.directionNum.up;
+        upBtn.className = "up active";
+    }
+}
+
+rightBtn.onclick = function(){
+    if(snake != null && snake.pos[0][1] != snake.pos[1][1]){
+        snake.direction = snake.directionNum.right;
+        rightBtn.className = "right active";
+    }
+}
+
+downBtn.onclick = function(){
+    if(snake != null && snake.pos[0][0] != snake.pos[1][0]){
+        snake.direction = snake.directionNum.down;
+        downBtn.className = "down active";
+    }
+}
+
+leftBtn.onclick = function(){
+    if(snake != null && snake.pos[0][1] != snake.pos[1][1]){
+        snake.direction = snake.directionNum.left;
+        leftBtn.className = "left active";
+    }
 }
 //---------------------------------------------------------------

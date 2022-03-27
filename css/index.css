@@ -2,8 +2,8 @@
     width: 640px;
     height: 640px;
     margin: 30px auto;
-    margin-bottom: 0;
     position: relative;
+    right: 100px;
 }
 
 
@@ -99,4 +99,84 @@
 .food{
     background-image: url(../img/food.png);
     background-size: cover;
+}
+
+.introduction{
+    width: 200px;
+    height: 640px;
+    position: absolute;
+    border: #225675 solid 5px;
+    box-sizing: border-box;
+    right: -200px;
+    top: 0;
+    background-color: green;
+}
+
+
+.introduction h1{
+    padding: 5px;
+    color: lightblue;
+}
+
+.introduction  .intro_content{
+    margin:7% 10%;
+    width: 80%;
+    height: 80%;
+    color: yellow;
+    line-height: 1.8em;
+    font-size: 16px;
+}
+
+.introduction .intro_content p{
+    margin: 5px;
+}
+
+.introduction .direction{
+    position: absolute;
+    top: 329px;
+    right: -1px;
+    height: 302px;
+    width: 192px;
+    /* background-color: blue; */
+}
+
+.introduction  .direction button{
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    background-color: rgb(239, 239, 239);
+    border-top: #1e2930 solid 5px;
+    border-bottom: #7f888d solid 5px;
+    border-right: #2e3438 solid 5px;
+    border-left: yellow solid 5px;
+}
+
+.introduction .direction button:hover{
+    background-color: rgb(220, 220, 220);
+}
+
+.introduction .direction .active{
+    background-color: rgb(100, 70, 70);
+    color: white;
+}
+
+.introduction .direction .up{
+    right: 70px;
+    top: 90px;
+}
+
+.introduction .direction .down{
+    right: 70px;
+    top: 160px;
+}
+
+.introduction .direction .left{
+    right: 125px;
+    top: 160px;
+}
+
+.introduction .direction .right{
+    right: 15px;
+    top: 160px;
 }
