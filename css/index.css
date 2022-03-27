@@ -161,6 +161,11 @@
     color: white;
 }
 
+.introduction .direction button:active{
+    background-color: rgb(100, 70, 70);
+    color: white;
+}
+
 .introduction .direction .up{
     right: 70px;
     top: 90px;

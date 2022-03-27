@@ -207,12 +207,16 @@ Game.prototype.init = function(){
     document.onkeydown = function(ev){
         if(ev.code == "ArrowLeft" || ev.code == "KeyA"){
             leftBtn.onclick();
+            leftBtn.className = "left active";
         }else if(ev.code == "ArrowRight" || ev.code == "KeyD"){
             rightBtn.onclick();
+            rightBtn.className = "right active";
         }else if(ev.code == "ArrowUp" || ev.code == "KeyW"){
             upBtn.onclick();
+            upBtn.className = "up active";
         }else if(ev.code == "ArrowDown" || ev.code == "KeyS"){
             downBtn.onclick();
+            downBtn.className = "down active";
         }
         if(ev.code == "Space"){
             if(pauseBtn.parentNode.style.display == "" || pauseBtn.parentNode.style.display == "none"){
@@ -333,28 +337,24 @@ overCurtain.onclick = function(){
 upBtn.onclick = function(){
     if(snake != null && snake.pos[0][0] != snake.pos[1][0]){
         snake.direction = snake.directionNum.up;
-        upBtn.className = "up active";
     }
 }
 
 rightBtn.onclick = function(){
     if(snake != null && snake.pos[0][1] != snake.pos[1][1]){
         snake.direction = snake.directionNum.right;
-        rightBtn.className = "right active";
     }
 }
 
 downBtn.onclick = function(){
     if(snake != null && snake.pos[0][0] != snake.pos[1][0]){
         snake.direction = snake.directionNum.down;
-        downBtn.className = "down active";
     }
 }
 
 leftBtn.onclick = function(){
     if(snake != null && snake.pos[0][1] != snake.pos[1][1]){
         snake.direction = snake.directionNum.left;
-        leftBtn.className = "left active";
     }
 }
 //---------------------------------------------------------------
