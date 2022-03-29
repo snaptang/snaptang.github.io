@@ -115,7 +115,7 @@
 
 .introduction h1{
     padding: 5px;
-    color: lightblue;
+    color: orange;
 }
 
 .introduction  .intro_content{
@@ -146,10 +146,10 @@
     width: 50px;
     cursor: pointer;
     background-color: rgb(239, 239, 239);
-    border-top: #1e2930 solid 5px;
+    border-top: #3d3e3f solid 5px;
     border-bottom: #7f888d solid 5px;
-    border-right: #2e3438 solid 5px;
-    border-left: yellow solid 5px;
+    border-right: #232629 solid 5px;
+    border-left: rgb(187, 184, 184) solid 5px;
 }
 
 .introduction .direction button:hover{
@@ -173,15 +173,21 @@
 
 .introduction .direction .down{
     right: 70px;
-    top: 160px;
+    top: 150px;
 }
 
 .introduction .direction .left{
     right: 125px;
-    top: 160px;
+    top: 150px;
 }
 
 .introduction .direction .right{
     right: 15px;
-    top: 160px;
+    top: 150px;
+}
+
+.introduction .direction .space{
+    right: 45px;
+    top: 210px;
+    width: 100px;
 }

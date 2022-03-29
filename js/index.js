@@ -184,7 +184,6 @@ function createFood(){
         food = new Square(foodPos[0],foodPos[1],'food');
         food.create();
     }else{
-        
         game.over();
     }
 }
@@ -223,6 +222,7 @@ Game.prototype.init = function(){
             downBtn.className = "down active";
         }
         if(ev.code == "Space"){
+            spaceBtn.className = "space active";
             if(pauseBtn.parentNode.style.display == "" || pauseBtn.parentNode.style.display == "none"){
                 if(game.timer != undefined){
                     game.pause();
@@ -254,6 +254,9 @@ Game.prototype.init = function(){
             case "ArrowLeft":
             case "KeyA":
                 leftBtn.className = "left";
+                break;
+            case "Space":
+                spaceBtn.className = "space";
                 break;
         }
     }
@@ -311,7 +314,8 @@ var startBtn = document.querySelector('.startBtn button'),
     upBtn = document.getElementsByClassName('direction')[0].children[0],
     rightBtn = document.getElementsByClassName('direction')[0].children[1],
     downBtn = document.getElementsByClassName('direction')[0].children[2],
-    leftBtn = document.getElementsByClassName('direction')[0].children[3];
+    leftBtn = document.getElementsByClassName('direction')[0].children[3],
+    spaceBtn = document.getElementsByClassName('direction')[0].children[4];
 //开始游戏
 startBtn.onclick = function(){
     startBtn.parentNode.style.display = 'none';
@@ -365,4 +369,11 @@ leftBtn.onmousedown = function(){
         snake.direction = snake.directionNum.left;
     }
 }
+
+spaceBtn.onmousedown = function(){
+    if(pauseBtn.parentNode.style.display == 'block')
+        pauseBtn.onclick();
+    else
+        snakeWrap.onclick();
+};
 //---------------------------------------------------------------
