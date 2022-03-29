@@ -56,25 +56,26 @@ function Snake(){
         left:{
             x: -1,
             y: 0,
-            rotate:180
+            rotate:'rotateY(180deg)'
         },
         right:{
             x: 1,
             y: 0,
-            rotate:0
+            rotate:'rotate(0deg)'
         },
         up:{
             x: 0,
             y: -1,
-            rotate:-90
+            rotate:'rotate(-90deg)'
         },
         down:{
             x: 0,
             y: 1,
-            rotate:90
+            rotate:'rotate(90deg)'
         }
     };
     this.direction = this.directionNum.right; //蛇走的方向
+    this.lastdirection = this.direction;  //记录蛇转向前的方向
 
 }
 
@@ -142,7 +143,10 @@ Snake.prototype.strategies = {
         this.head.remove();
         newHead.next = newBody;
         newBody.last = newHead;
-        newHead.viewContent.style.transform = 'rotate('+this.direction.rotate+'deg)';
+        if(this.lastdirection.y)
+            newHead.viewContent.style.transform = this.direction.rotate;
+        else
+            newHead.viewContent.style.transform = this.lastdirection.rotate + this.direction.rotate;
         
 
         //更新蛇身坐标
@@ -206,16 +210,16 @@ Game.prototype.init = function(){
     createFood();
     document.onkeydown = function(ev){
         if(ev.code == "ArrowLeft" || ev.code == "KeyA"){
-            leftBtn.onclick();
+            leftBtn.onmousedown();
             leftBtn.className = "left active";
         }else if(ev.code == "ArrowRight" || ev.code == "KeyD"){
-            rightBtn.onclick();
+            rightBtn.onmousedown();
             rightBtn.className = "right active";
         }else if(ev.code == "ArrowUp" || ev.code == "KeyW"){
-            upBtn.onclick();
+            upBtn.onmousedown();
             upBtn.className = "up active";
         }else if(ev.code == "ArrowDown" || ev.code == "KeyS"){
-            downBtn.onclick();
+            downBtn.onmousedown();
             downBtn.className = "down active";
         }
         if(ev.code == "Space"){
@@ -334,26 +338,30 @@ overCurtain.onclick = function(){
     startBtn.parentNode.style.display = 'block';
 }
 //方向键
-upBtn.onclick = function(){
+upBtn.onmousedown = function(){
     if(snake != null && snake.pos[0][0] != snake.pos[1][0]){
+        snake.lastdirection = snake.direction;
         snake.direction = snake.directionNum.up;
     }
 }
 
-rightBtn.onclick = function(){
+rightBtn.onmousedown = function(){
     if(snake != null && snake.pos[0][1] != snake.pos[1][1]){
+        snake.lastdirection = snake.direction;
         snake.direction = snake.directionNum.right;
     }
 }
 
-downBtn.onclick = function(){
+downBtn.onmousedown = function(){
     if(snake != null && snake.pos[0][0] != snake.pos[1][0]){
+        snake.lastdirection = snake.direction;
         snake.direction = snake.directionNum.down;
     }
 }
 
-leftBtn.onclick = function(){
+leftBtn.onmousedown = function(){
     if(snake != null && snake.pos[0][1] != snake.pos[1][1]){
+        snake.lastdirection = snake.direction;
         snake.direction = snake.directionNum.left;
     }
 }
