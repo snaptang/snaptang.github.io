@@ -1,0 +1,122 @@
+#mine{
+    margin: 50px auto;
+
+}
+
+.level{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.level button{
+    padding: 5px 15px;
+    background: #02a4ad;
+    border: none;
+    color: white;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+
+.level button:hover{
+    background: #04bac4;
+}
+
+.level .active{
+    background: #00abff;
+}
+
+table{
+    border-spacing: 1px;
+    background: #929196;
+    margin: 0 auto;
+}
+
+td{
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    background: #ccc;
+    border: 2px solid;
+    border-color: white #a1a1a1 #a1a1a1 white;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+
+}
+
+/* td:hover{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+} */
+
+.gameBox td.zero{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    font-size: 0;
+}
+
+.gameBox td.one{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    color: black;
+}
+
+.gameBox td.two{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    color: blue;
+}
+
+.gameBox td.three{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    color: red;
+}
+
+.gameBox td.four{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    color: green;
+}
+
+.gameBox td.five{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    color: brown;
+}
+
+.gameBox td.six{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    color: skyblue;
+}
+
+.gameBox td.seven{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    color: #008c8c;
+}
+
+.gameBox td.eight{
+    border-color: #d9d9d9;
+    background: #d9d9d9;
+    color: #00abff;
+}
+
+.info{
+    margin-top: 10px;
+    text-align: center;
+}
+
+.mine{
+    background: #d9d9d9 url(../images/mine.png) no-repeat center;
+    background-size: cover;
+}
+
+.flag{
+    background: #ccc url(../images/flag.png) no-repeat center;
+    background-size: cover;
+}
