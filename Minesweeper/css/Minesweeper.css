@@ -22,6 +22,10 @@
     background: #04bac4;
 }
 
+.level button:active{
+    background: #0481c0;
+}
+
 .level .active{
     background: #00abff;
 }

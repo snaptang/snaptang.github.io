@@ -10,15 +10,6 @@ for(let i = 0; i < btns.length; i++){
         btns[i].className = 'active';
         mine = new Mine(...arr[i]);
         ln = i;
-        var n = 0;
-        for(var m = 0; m < mine.tr; m++){
-            for(var j = 0; j < mine.td; j++){
-                if(mine.squares[m][j].type == 'mine'){
-                    n++;
-                }
-            }
-        }
-        console.log(n);
     }
 }
 
@@ -32,28 +23,31 @@ function Mine(tr,td,mineNum){
     this.squares = [];  //方块的信息
     this.tds = [];  //存储所有单元格的DOM
     this.surplusMine = mineNum;  //剩余雷数
+    this.uncovSquareNum = this.tr*this.td;  //未被揭开的方块数量
 
     this.parent = document.querySelector('.gameBox');
     this.init();
 }
 
-Mine.prototype.randomNum = function(){  //随机生成雷的位置
-    var square = new Array(this.tr * this.td);
+Mine.prototype.randomNum = function(){  //随机生成雷的坐标
+    var square = new Array(this.uncovSquareNum);
     for(var i = 0; i < square.length; i++){
         square[i] = i;
     }
-    square.sort(function(){return 0.5 - Math.random()});
-    return square.slice(0,this.mineNum);
+    square.sort(function(){
+        return 0.5 - Math.random()
+    });
+    return square.slice(0,this.mineNum);  //取前this.mineNum个元素作为雷的坐标
 }
 
 Mine.prototype.init = function(){
-    var rn = this.randomNum();  //雷在格子里的位置
+    var rn = this.randomNum();  //雷在雷图里的坐标
     var n = 0;  //用来找到格子对应的索引
     for(var i = 0; i < this.tr; i++){
         this.squares[i] = [];
         for(var j = 0; j < this.td; j++){
             // this.square[i][j] = ;
-            if(rn.indexOf(++n) != -1){
+            if(rn.indexOf(n++) != -1){
                 this.squares[i][j] = {type:'mine', x:j, y:i};
             }else{
                 this.squares[i][j] = {type:'number', x:j, y:i, value:0};
@@ -87,6 +81,9 @@ Mine.prototype.createDom = function(){
             domTd.onmouseup = function(e){
                 // this.style.backgroundColor
                 This.play(e,this);
+                if(This.uncovSquareNum == This.mineNum){
+                    This.gameOver(1);
+                }
             }
             
             this.tds[i][j] = domTd;
@@ -153,11 +150,12 @@ Mine.prototype.play = function(e,obj){
             if(curSquare.type == 'number'){
                 obj.innerHTML = curSquare.value;
                 obj.className = cl[curSquare.value];
+                this.uncovSquareNum--;
                 if(curSquare.value == 0){
                     this.getAllZero(curSquare);
                 }
             }else{
-                this.gameOver(obj);
+                this.gameOver(0,obj);
             }
         }else if(e.which == 3){
             if((obj.className || this.surplusMine == 0 )&& obj.className != 'flag'){
@@ -177,6 +175,7 @@ Mine.prototype.getAllZero = function(square){
         if(this.tds[x][y].className == ''){
             this.tds[x][y].innerHTML = this.squares[x][y].value;
             this.tds[x][y].className = cl[this.squares[x][y].value];
+            this.uncovSquareNum--;
             if(this.squares[x][y].value == 0){
                 this.getAllZero(this.squares[x][y]);
             }
@@ -184,16 +183,22 @@ Mine.prototype.getAllZero = function(square){
     }
 }
 
-Mine.prototype.gameOver = function(clickTd){
+Mine.prototype.gameOver = function(win,clickTd){
     for(var i = 0; i < this.tr; i++) {
         for(var j = 0; j < this.td; j++){
             if(this.squares[i][j].type == 'mine' && this.tds[i][j].className != 'flag'){
-                this.tds[i][j].className = 'mine';
+                if(win){
+                    this.tds[i][j].className = 'flag';
+                    this.minenumDom.innerHTML = --this.surplusMine;
+                }else{
+                    this.tds[i][j].className = 'mine';
+                }
             }
             this.tds[i][j].onmousedown = null;
-        }
-        
-    }  
+            this.tds[i][j].onmouseup = null;
+        } 
+    }
+    win?console.log('你赢了'):console.log('你失败了');
     if(clickTd){
         clickTd.style.backgroundColor = 'red';
     }
