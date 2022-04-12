@@ -1,5 +1,5 @@
 #mine{
-    margin: 50px auto;
+    margin: 0  auto;
 
 }
 
@@ -38,23 +38,22 @@ table{
 
 td{
     padding: 0;
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
+    width: 16.5px;
+    height: 16.5px;
+    min-width: 16.5px;
+    min-height: 16.5px;
     background: #ccc;
     border: 2px solid;
     border-color: white #a1a1a1 #a1a1a1 white;
     text-align: center;
-    line-height: 20px;
+    line-height: 16.5px;
     font-weight: bold;
 
 }
 
-/* td:hover{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
-} */
+td:active{
+    background: rgb(174, 170, 170);
+}
 
 .gameBox td.zero{
     border-color: #d9d9d9;
@@ -62,51 +61,40 @@ td{
     font-size: 0;
 }
 
-.gameBox td.one{
+.gameBox td.number{
     border-color: #d9d9d9;
     background: #d9d9d9;
+    user-select: none;
+}
+.gameBox td.one{
     color: black;
 }
 
 .gameBox td.two{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
     color: blue;
 }
 
 .gameBox td.three{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
     color: red;
 }
 
 .gameBox td.four{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
     color: green;
 }
 
 .gameBox td.five{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
     color: brown;
 }
 
 .gameBox td.six{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
     color: skyblue;
 }
 
 .gameBox td.seven{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
     color: #008c8c;
 }
 
 .gameBox td.eight{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
     color: #00abff;
 }
 

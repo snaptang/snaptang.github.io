@@ -46,19 +46,19 @@ Mine.prototype.init = function(){
     for(var i = 0; i < this.tr; i++){
         this.squares[i] = [];
         for(var j = 0; j < this.td; j++){
-            // this.square[i][j] = ;
             if(rn.indexOf(n++) != -1){
-                this.squares[i][j] = {type:'mine', x:j, y:i};
+                this.squares[i][j] = {type:'mine', x:i, y:j};
             }else{
-                this.squares[i][j] = {type:'number', x:j, y:i, value:0};
+                this.squares[i][j] = {type:'number', x:i, y:j, value:0};
             }
         }
     }
     this.parent.oncontextmenu = function(){
         return false;
     }
-    this.updateNum();
     this.createDom();
+    this.updateNum();
+
 
     this.minenumDom = document.querySelector('.mineNum');
     this.minenumDom.innerHTML = this.surplusMine;
@@ -79,21 +79,14 @@ Mine.prototype.createDom = function(){
 
 
             domTd.onmouseup = function(e){
-                // this.style.backgroundColor
                 This.play(e,this);
+                // console.log(This.uncovSquareNum)
                 if(This.uncovSquareNum == This.mineNum){
                     This.gameOver(1);
                 }
             }
             
             this.tds[i][j] = domTd;
-
-            // if(this.squares[i][j].type == 'mine'){
-            //     domTd.className = 'mine';
-            // }
-            // if(this.squares[i][j].type == 'number'){
-            //     domTd.innerHTML = this.squares[i][j].value;
-            // }
             domTr.appendChild(domTd);
         }
 
@@ -103,23 +96,28 @@ Mine.prototype.createDom = function(){
     this.parent.appendChild(table);
 }
 
-Mine.prototype.getAround = function(square){
+Mine.prototype.getAround = function(square){  //返回包括方块自身在内的方块所在九宫格内不是雷的方块的坐标
     var x = square.x,
         y = square.y,
-        result = [];  //返回找到的格子的坐标
+        num = [],  //附近的数字格子的坐标
+        mine = [], //附近的雷格子的坐标
+        flag = [];  //附近的棋子的坐标
 
     for(var i = x-1; i <= x+1; i++){
         for(var j = y-1; j <= y+1; j++){
-            if( 0 <= i && i < this.tr &&
-                0 <= j && j < this.td &&
-                this.squares[j][i].type != 'mine'
-                ){
-                    result.push([j,i]);
+            if( 0 <= i && i < this.tr && 0 <= j && j < this.td){
+                if(this.tds[i][j].className == 'flag'){
+                    flag.push([i,j]);
+                }else if(this.squares[i][j].type == 'mine'){
+                    mine.push([i,j]);
+                }else{
+                    num.push([i,j]);
                 }
+            }   
         }
     }
 
-    return result;
+    return [num,mine,flag];
 }
 
 Mine.prototype.updateNum = function(){
@@ -128,8 +126,7 @@ Mine.prototype.updateNum = function(){
             if(this.squares[i][j].type == 'number'){
                 continue;
             }
-            var num = this.getAround(this.squares[i][j]);
-
+            var num = this.getAround(this.squares[i][j])[0];
             for(var k = 0; k < num.length; k++){
                 this.squares[num[k][0]][num[k][1]].value++;
             }
@@ -141,21 +138,19 @@ var cl = ['zero','one','two','three','four','five','six','seven','eight'];  //�
 
 Mine.prototype.play = function(e,obj){
     if(e.which == 1 || e.which == 3){
-        // var e_which = e.which;
-        // obj.onmousedown = function(e,e_which,obj){
-
-        // }
         if(e.which == 1 && obj.className != 'flag'){
             var curSquare = this.squares[obj.pos[0]][obj.pos[1]];  //被点击的方块的信息
-            if(curSquare.type == 'number'){
+            if(curSquare.type == 'number' && obj.className == ''){  //未被点开的数字方块
                 obj.innerHTML = curSquare.value;
-                obj.className = cl[curSquare.value];
+                obj.className = cl[curSquare.value] + ' number';
                 this.uncovSquareNum--;
                 if(curSquare.value == 0){
-                    this.getAllZero(curSquare);
+                    this.openAround(curSquare);
                 }
-            }else{
+            }else if(curSquare.type == 'mine'){  //未被点开的雷方块
                 this.gameOver(0,obj);
+            }else{  //已被点开的数字方块
+                this.openAround(curSquare);
             }
         }else if(e.which == 3){
             if((obj.className || this.surplusMine == 0 )&& obj.className != 'flag'){
@@ -167,20 +162,29 @@ Mine.prototype.play = function(e,obj){
     
 }
 
-Mine.prototype.getAllZero = function(square){
-    var around = this.getAround(square);          
-    for(var i = 0; i < around.length; i++){
-        var x = around[i][0],
-            y = around[i][1];
-        if(this.tds[x][y].className == ''){
-            this.tds[x][y].innerHTML = this.squares[x][y].value;
-            this.tds[x][y].className = cl[this.squares[x][y].value];
-            this.uncovSquareNum--;
-            if(this.squares[x][y].value == 0){
-                this.getAllZero(this.squares[x][y]);
+Mine.prototype.openAround = function(square){
+    var [around_num, around_mine, around_flag] = this.getAround(square);
+    if(around_flag.length >= square.value){  //当雷数不小于被点击的方块内的数字时执行
+        for(var i = 0; i < around_num.length; i++){
+            var x = around_num[i][0],
+                y = around_num[i][1];
+            if(this.tds[x][y].className == ''){
+                this.tds[x][y].innerHTML = this.squares[x][y].value;
+                this.tds[x][y].className = cl[this.squares[x][y].value] + ' number';
+                this.uncovSquareNum--;
+                if(this.squares[x][y].value == 0){
+                    this.openAround(this.squares[x][y]);
+                }
             }
         }
-    }
+        for(i = 0; i < around_mine.length; i++){
+            x = around_mine[i][0];
+            y = around_mine[i][1];
+            if(this.tds[x][y].className == ''){
+                this.gameOver(0,this.tds[x][y]);
+            }
+        }
+    }          
 }
 
 Mine.prototype.gameOver = function(win,clickTd){
