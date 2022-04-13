@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="css/Minesweeper.css">
-    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
     <a href="../index.html" class="back">返回</a>
@@ -16,10 +16,13 @@
             <button>中级</button>
             <button>高级</button>
         </div>
-        <div class="gameBox">
-
+        <div>
+            <div class="info clearfix">
+                <span>剩余雷数:<span class="mineNum"></span></span>
+                <span>用时:<span class="timer">0</span></span>
+            </div>
         </div>
-        <div class="info">剩余雷数：<span class="mineNum"></span></div>
+        <div class="gameBox"></div>
     </div>
     <script src="js/Minesweeper.js"></script>
 </body>

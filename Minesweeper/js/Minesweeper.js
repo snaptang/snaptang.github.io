@@ -60,8 +60,13 @@ Mine.prototype.init = function(){
     this.updateNum();
 
 
-    this.minenumDom = document.querySelector('.mineNum');
+    this.minenumDom = document.querySelector('.info .mineNum');
     this.minenumDom.innerHTML = this.surplusMine;
+    this.int;  //用于开始和停止计时器 
+    this.timer = 0;  //用于显示计时器的时间
+    this.timerDom = document.querySelector('.info .timer');
+    this.timeover();  //关闭上一局游戏的计时器
+    this.timerDom.innerHTML = 0;
 }
 
 Mine.prototype.createDom = function(){
@@ -79,8 +84,11 @@ Mine.prototype.createDom = function(){
 
 
             domTd.onmouseup = function(e){
+                if(This.timer == 0){
+                    This.timer++;
+                    This.timeStart();
+                }
                 This.play(e,this);
-                // console.log(This.uncovSquareNum)
                 if(This.uncovSquareNum == This.mineNum){
                     This.gameOver(1);
                 }
@@ -132,6 +140,16 @@ Mine.prototype.updateNum = function(){
             }
         }
     }
+}
+
+Mine.prototype.timeStart = function(){
+    this.int = setInterval(()=>{
+        this.timerDom.innerHTML = this.timer++;
+    },1000)
+}
+
+Mine.prototype.timeover = function(){
+    this.int = clearInterval(this.int);
 }
 
 var cl = ['zero','one','two','three','four','five','six','seven','eight'];  //简化游戏中指示方块周围雷数量的数字
@@ -188,6 +206,7 @@ Mine.prototype.openAround = function(square){
 }
 
 Mine.prototype.gameOver = function(win,clickTd){
+    this.timeover();
     for(var i = 0; i < this.tr; i++) {
         for(var j = 0; j < this.td; j++){
             if(this.squares[i][j].type == 'mine' && this.tds[i][j].className != 'flag'){
