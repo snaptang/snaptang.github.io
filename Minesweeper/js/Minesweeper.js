@@ -8,6 +8,9 @@ for(let i = 0; i < btns.length; i++){
     btns[i].onclick = function(){
         btns[ln].className = '';
         btns[i].className = 'active';
+        if(mine){
+            mine.timeover();
+        }
         mine = new Mine(...arr[i]);
         ln = i;
     }
@@ -59,19 +62,18 @@ Mine.prototype.init = function(){
     this.createDom();
     this.updateNum();
 
-
     this.minenumDom = document.querySelector('.info .mineNum');
     this.minenumDom.innerHTML = this.surplusMine;
     this.int;  //用于开始和停止计时器 
     this.timer = 0;  //用于显示计时器的时间
     this.timerDom = document.querySelector('.info .timer');
-    this.timeover();  //关闭上一局游戏的计时器
     this.timerDom.innerHTML = 0;
 }
 
 Mine.prototype.createDom = function(){
-    var table = document.createElement('table');
-    var This = this;
+    var table = document.createElement('table'),
+        This = this;
+    this.leftdown = 0; //记录鼠标是否摁下了左键
     for(var i = 0; i < this.tr; i++){  //行
         var domTr = document.createElement('tr');
         this.tds[i] = [];
@@ -82,9 +84,43 @@ Mine.prototype.createDom = function(){
             
             domTd.pos = [i,j];  //存下格子坐标
 
+            //用于增强点触效果-------------------
+            domTd.onmousedown = function(e){
+                if(e.which == 1){
+                    This.leftdown = 1;
+                    if(this.className == ''){
+                        this.className = 'active';
+                    }else if(this.className != 'flag'){
+                        var [num, mine] = This.getAround(This.squares[this.pos[0]][this.pos[1]]).slice(0,2);
+                        num.concat(mine).forEach((sub)=>{
+                            if(This.tds[sub[0]][sub[1]].className == ''){
+                                This.tds[sub[0]][sub[1]].className = 'active';
+                            }
+                        })
+                    }
+                }
+            }
 
-            domTd.onmouseup = function(e){
-                if(This.timer == 0){
+            domTd.onmouseover = function(){
+                if(This.leftdown && this.className == ''){
+                    this.className = 'active';
+                }
+            }
+
+            domTd.onmouseout = function(){
+                if(This.leftdown && this.className == 'active'){
+                    this.className = '';
+                }
+            }
+
+            document.onmouseup = function(){
+                This.leftdown = 0;
+            }
+            //---------------------------------------
+
+            domTd.onmouseup = function(e){  //用于处理游戏逻辑
+
+                if(This.timer == 0){  //第一次点击时开始计时
                     This.timer++;
                     This.timeStart();
                 }
@@ -104,12 +140,12 @@ Mine.prototype.createDom = function(){
     this.parent.appendChild(table);
 }
 
-Mine.prototype.getAround = function(square){  //返回包括方块自身在内的方块所在九宫格内不是雷的方块的坐标
+Mine.prototype.getAround = function(square){  //参数为某方块的信息，返回包括方块自身在内的九宫格内旗子、数字和雷的方块坐标
     var x = square.x,
         y = square.y,
-        num = [],  //附近的数字格子的坐标
-        mine = [], //附近的雷格子的坐标
-        flag = [];  //附近的棋子的坐标
+        num = [],  //附近未标记为旗子的数字方块的坐标
+        mine = [], //附近未标记为旗子的雷方块的坐标
+        flag = [];  //附近标记为旗子的方块坐标
 
     for(var i = x-1; i <= x+1; i++){
         for(var j = y-1; j <= y+1; j++){
@@ -154,7 +190,10 @@ Mine.prototype.timeover = function(){
 
 var cl = ['zero','one','two','three','four','five','six','seven','eight'];  //简化游戏中指示方块周围雷数量的数字
 
-Mine.prototype.play = function(e,obj){
+Mine.prototype.play = function(e,obj){  //参数为某方块的DOM
+    if(obj.className == 'active'){
+        obj.className = '';
+    }
     if(e.which == 1 || e.which == 3){
         if(e.which == 1 && obj.className != 'flag'){
             var curSquare = this.squares[obj.pos[0]][obj.pos[1]];  //被点击的方块的信息
@@ -180,32 +219,34 @@ Mine.prototype.play = function(e,obj){
     
 }
 
-Mine.prototype.openAround = function(square){
-    var [around_num, around_mine, around_flag] = this.getAround(square);
-    if(around_flag.length >= square.value){  //当雷数不小于被点击的方块内的数字时执行
-        for(var i = 0; i < around_num.length; i++){
-            var x = around_num[i][0],
-                y = around_num[i][1];
-            if(this.tds[x][y].className == ''){
-                this.tds[x][y].innerHTML = this.squares[x][y].value;
-                this.tds[x][y].className = cl[this.squares[x][y].value] + ' number';
-                this.uncovSquareNum--;
-                if(this.squares[x][y].value == 0){
-                    this.openAround(this.squares[x][y]);
+Mine.prototype.openAround = function(square){  //参数为某方块的信息
+    var [around_num, around_mine, around_flag] = this.getAround(square),
+        This = this;
+    around_num.concat(around_mine).forEach((sub)=>{
+        var x = sub[0],
+            y = sub[1];
+        if(around_flag.length >= square.value){  //当雷数不小于被点击的方块内的数字时执行
+            if(This.tds[x][y].className == '' || This.tds[x][y].className == 'active'){
+                if(This.squares[x][y].type == 'mine'){
+                    This.gameOver(0,This.tds[x][y]);
+                }else{
+                    This.tds[x][y].innerHTML = This.squares[x][y].value;
+                    This.tds[x][y].className = cl[This.squares[x][y].value] + ' number';
+                    This.uncovSquareNum--;
+                    if(This.squares[x][y].value == 0){
+                    This.openAround(This.squares[x][y]);
+                    }
                 }
             }
         }
-        for(i = 0; i < around_mine.length; i++){
-            x = around_mine[i][0];
-            y = around_mine[i][1];
-            if(this.tds[x][y].className == ''){
-                this.gameOver(0,this.tds[x][y]);
-            }
+        if(This.tds[x][y].className == 'active'){
+            This.tds[x][y].className = '';
         }
-    }          
+    })
+        
 }
 
-Mine.prototype.gameOver = function(win,clickTd){
+Mine.prototype.gameOver = function(win,clickTd){  //参数为某方块的DOM
     this.timeover();
     for(var i = 0; i < this.tr; i++) {
         for(var j = 0; j < this.td; j++){

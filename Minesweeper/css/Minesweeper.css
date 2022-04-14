@@ -55,24 +55,24 @@ td{
     text-align: center;
     line-height: 16.5px;
     font-weight: bold;
-
+    user-select: none;
 }
 
-td:active{
+td.active{
     background: rgb(174, 170, 170);
 }
 
-.gameBox td.zero{
-    border-color: #d9d9d9;
-    background: #d9d9d9;
-    font-size: 0;
-}
 
 .gameBox td.number{
     border-color: #d9d9d9;
     background: #d9d9d9;
     user-select: none;
 }
+
+.gameBox td.zero{
+    font-size: 0;
+}
+
 .gameBox td.one{
     color: black;
 }
