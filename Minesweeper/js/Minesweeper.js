@@ -104,12 +104,26 @@ Mine.prototype.createDom = function(){
             domTd.onmouseover = function(){
                 if(This.leftdown && this.className == ''){
                     this.className = 'active';
+                }else if(This.leftdown && this.className != 'flag'){
+                    var [num, mine] = This.getAround(This.squares[this.pos[0]][this.pos[1]]).slice(0,2);
+                    num.concat(mine).forEach((sub)=>{
+                        if(This.tds[sub[0]][sub[1]].className == ''){
+                            This.tds[sub[0]][sub[1]].className = 'active';
+                        }
+                    })
                 }
             }
 
             domTd.onmouseout = function(){
                 if(This.leftdown && this.className == 'active'){
                     this.className = '';
+                }else if(This.leftdown && this.className != 'flag'){
+                    var [num, mine] = This.getAround(This.squares[this.pos[0]][this.pos[1]]).slice(0,2);
+                    num.concat(mine).forEach((sub)=>{
+                        if(This.tds[sub[0]][sub[1]].className == 'active'){
+                            This.tds[sub[0]][sub[1]].className = '';
+                        }
+                    })
                 }
             }
 
@@ -221,12 +235,15 @@ Mine.prototype.play = function(e,obj){  //参数为某方块的DOM
 
 Mine.prototype.openAround = function(square){  //参数为某方块的信息
     var [around_num, around_mine, around_flag] = this.getAround(square),
-        This = this;
+        This = this,
+        x,y;
     around_num.concat(around_mine).forEach((sub)=>{
-        var x = sub[0],
-            y = sub[1];
-        if(around_flag.length >= square.value){  //当雷数不小于被点击的方块内的数字时执行
-            if(This.tds[x][y].className == '' || This.tds[x][y].className == 'active'){
+        x = sub[0], y = sub[1];
+        if(This.tds[x][y].className == 'active'){
+            This.tds[x][y].className = '';
+        }
+        if(around_flag.length >= square.value){  //当旗子数不小于被点击的方块内的数字时执行
+            if(This.tds[x][y].className == ''){
                 if(This.squares[x][y].type == 'mine'){
                     This.gameOver(0,This.tds[x][y]);
                 }else{
@@ -234,13 +251,10 @@ Mine.prototype.openAround = function(square){  //参数为某方块的信息
                     This.tds[x][y].className = cl[This.squares[x][y].value] + ' number';
                     This.uncovSquareNum--;
                     if(This.squares[x][y].value == 0){
-                    This.openAround(This.squares[x][y]);
+                        This.openAround(This.squares[x][y]);
                     }
-                }
+                }   
             }
-        }
-        if(This.tds[x][y].className == 'active'){
-            This.tds[x][y].className = '';
         }
     })
         
@@ -262,7 +276,6 @@ Mine.prototype.gameOver = function(win,clickTd){  //参数为某方块的DOM
             this.tds[i][j].onmouseup = null;
         } 
     }
-    win?console.log('你赢了'):console.log('你失败了');
     if(clickTd){
         clickTd.style.backgroundColor = 'red';
     }
