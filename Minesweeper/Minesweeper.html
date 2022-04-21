@@ -15,6 +15,7 @@
             <button>初级</button>
             <button>中级</button>
             <button>高级</button>
+            <button>规则</button>
         </div>
         <div>
             <div class="info clearfix">
@@ -23,6 +24,20 @@
             </div>
         </div>
         <div class="gameBox"></div>
+        <div class="rule">
+            <div>
+                <p>每一个雷图中有一定数量的小方块，鼠标左键点击想要揭开的小方块，每个小方块下可能埋着地雷或者代表方块周围埋着地雷的小方块
+                    数量的数字，埋着0的方块底下是空的。
+                </p>
+                <p>
+                    右键点击未揭开的小方块，将在方块上插上小红旗，表示你认为这个方块下是地雷。左键点击已揭开的数字方块，如果周围的小红旗数量
+                    不小于这个数字，将会揭开这个方块周围的所有不是小红旗的方块。
+                </p>
+                <p>
+                    当揭开埋着地雷的方块时，地雷引爆，游戏失败；当所有的数字方块被揭开时，游戏胜利。
+                </p>
+            </div>
+        </div>
     </div>
     <script src="js/Minesweeper.js"></script>
 </body>

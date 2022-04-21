@@ -6,7 +6,6 @@
 
 #mine{
     margin: 0  auto;
-
 }
 
 .level{
@@ -59,7 +58,8 @@ td{
 }
 
 td.active{
-    background: rgb(174, 170, 170);
+    border-color: #d9d9d9;
+    background: #d9d9d9;
 }
 
 
@@ -107,10 +107,9 @@ td.active{
 
 .info{
     margin: 5px auto;
-    width: 190px;
+    width: 250px;
 }
 .info span:first-child{
-    /* margin-top: 10px; */
     float: left;
 }
 
@@ -126,4 +125,30 @@ td.active{
 .flag{
     background: #ccc url(../images/flag.png) no-repeat center;
     background-size: cover;
+}
+
+#mine .rule{
+    display: none;
+    position: relative;
+}
+
+.rule div{
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 15px;
+    width: 450px;
+    border: #008c8c 4px solid;
+    border-radius: 3px;
+    font-size: x-large;
+    color: rgb(120,120,120);
+    padding: 20px;
+    background-color: skyblue;
+    user-select: none;
+}
+
+.rule div p{
+    line-height: 30px;
+    margin: 0 0 15px 0;
 }

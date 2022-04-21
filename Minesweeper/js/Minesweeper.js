@@ -2,12 +2,17 @@
 var btns = document.querySelectorAll('.level button'),
     mine = null;
     ln = 0,
-    arr = [[9,9,10],[16,16,40],[28,28,99]];
+    arr = [[9,9,10],[16,16,40],[28,28,99],[0,0,0]];
 
 for(let i = 0; i < btns.length; i++){
     btns[i].onclick = function(){
         btns[ln].className = '';
         btns[i].className = 'active';
+        if(ln == 3 && i != 3){
+            document.querySelector('#mine .rule').style.display = 'none';
+        }else if(i == 3){
+            document.querySelector('#mine .rule').style.display = 'block';
+        }
         if(mine){
             mine.timeover();
         }
@@ -15,6 +20,7 @@ for(let i = 0; i < btns.length; i++){
         ln = i;
     }
 }
+
 
 
 //雷图对象-----------------------------------------------------------
@@ -282,6 +288,6 @@ Mine.prototype.gameOver = function(win,clickTd){  //参数为某方块的DOM
 }
 
 
-btns[0].onclick();  //初始化游戏
+btns[3].onclick();  //初始化游戏
 
 
